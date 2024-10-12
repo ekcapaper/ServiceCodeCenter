@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,yarn,node,python,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,yarn,node,python,pycharm+all
 
+.idea
+
 ### Node ###
 # Logs
 logs
