@@ -4,7 +4,7 @@ services:
     container_name: conda-env
     volumes:
       - conda_data:/opt/conda
-
+    command: tail -f /dev/null
   theia-ide:
     build:
         context: ./theia-blueprint-ide
@@ -14,8 +14,6 @@ services:
       - conda-env
     volumes:
       - conda_data:/opt/conda
-    environment:
-      - PATH=/opt/conda:$PATH
     ports:
       - 3000:3000
 
