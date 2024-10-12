@@ -8,19 +8,19 @@ from watchfiles import awatch
 import yaml
 
 
-async def handle_changes(changes):
-    for change in changes:
-        action, path = change
-        if action in ('added', 'modified'):
-            print(f'파일이 {action}되었습니다: {path}')
+async def watch_files():
+    async for changes in awatch('/path/to/dir'):
+        print(changes)
 
-async def watch_yaml_files(directory):
-    async for changes in awatch(directory, filter=lambda p: p.endswith('.yaml')):
-        await handle_changes(changes)
+async def background_temp():
+    while True:
+        print("abcd")
+        await asyncio.sleep(1)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
+    asyncio.create_task(background_temp())
     yield
     # shutdown
 
