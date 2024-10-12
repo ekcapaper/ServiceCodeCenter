@@ -65,9 +65,6 @@ ENV USE_LOCAL_GIT true
 USER theia
 WORKDIR /home/theia/applications/browser
 
-# Custom Option
-ENV PATH /opt/conda:$PATH
-
 # Launch the backend application via node
 ENTRYPOINT [ "node", "/home/theia/applications/browser/lib/backend/main.js" ]
 
