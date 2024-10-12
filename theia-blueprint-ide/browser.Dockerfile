@@ -65,6 +65,7 @@ ENV USE_LOCAL_GIT true
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 COPY ./configs_custom/settings.json /home/theia/.theia-ide/settings.json
 RUN chown theia:theia /home/theia/.theia-ide/settings.json
+RUN chown -R theia:theia /home/theia/.theia-ide
 # CUSTOM END - Conda Env
 
 # Swtich to Theia user
