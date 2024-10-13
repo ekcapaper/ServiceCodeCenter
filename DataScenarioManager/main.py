@@ -2,32 +2,24 @@ import asyncio
 import json
 import os
 import subprocess
+import aiofiles
+
 from contextlib import asynccontextmanager
 
 import uvicorn
+import yaml
 from fastapi import FastAPI, HTTPException
 from watchfiles import awatch
 
 
-class DataScenarioManager:
-    def __init__(self):
-        self.__projects_path = "./projects"
 
-    async def watch_project_dsm(self):
-        async for changes in awatch(self.__projects_path):
-            print(changes)
 
-    async def background_temp(self):
-        while True:
-            print("abcd")
-            await asyncio.sleep(1)
 
 data_scenario_manager_instance = DataScenarioManager()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
-    asyncio.create_task(data_scenario_manager_instance.background_temp())
     asyncio.create_task(data_scenario_manager_instance.watch_project_dsm())
     yield
     # shutdown
