@@ -1,23 +1,9 @@
 services:
-  conda-env:
-    build:
-      context: ./conda-env
-      dockerfile: Dockerfile
-    container_name: conda-env
-    volumes:
-      - conda_data:/opt/conda
-    command: tail -f /dev/null
   theia-ide:
     build:
       context: ./theia-blueprint-ide
       dockerfile: browser.Dockerfile
     container_name: theia-ide
-    depends_on:
-      - conda-env
-    volumes:
-      - conda_data:/opt/conda
     ports:
       - 3000:3000
-
-volumes:
-    conda_data:
+      
