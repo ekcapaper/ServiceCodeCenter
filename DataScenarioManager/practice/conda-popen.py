@@ -1,6 +1,8 @@
 import subprocess
 import signal
 import sys
+import threading
+import time
 
 # Conda 환경 이름
 env_name = 'base'
@@ -30,16 +32,12 @@ def run_command(command):
     except subprocess.CalledProcessError as e:
         print("An error occurred while executing the script:", e)
 
-# 키보드 인터럽트 처리 함수
-def signal_handler(sig, frame):
+def stop_process():
     global process
-    print("Stopping the execution...")
-    if process:
-        process.terminate()  # 프로세스 종료
-    sys.exit(0)
+    time.sleep(5)
+    process.terminate()
 
-# 시그널 핸들러 등록
-signal.signal(signal.SIGINT, signal_handler)
-
+thread = threading.Thread(target=stop_process())
+thread.start()
 # 명령 실행
 run_command(command)
