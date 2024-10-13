@@ -3,7 +3,6 @@ services:
     build:
       context: ./conda-env
       dockerfile: Dockerfile
-    image: condaforge/miniforge3
     container_name: conda-env
     volumes:
       - conda_data:/opt/conda
