@@ -1,5 +1,8 @@
 services:
   conda-env:
+    build:
+      context: ./conda-env
+      dockerfile: Dockerfile
     image: condaforge/miniforge3
     container_name: conda-env
     volumes:
@@ -7,8 +10,8 @@ services:
     command: tail -f /dev/null
   theia-ide:
     build:
-        context: ./theia-blueprint-ide
-        dockerfile: browser.Dockerfile
+      context: ./theia-blueprint-ide
+      dockerfile: browser.Dockerfile
     container_name: theia-ide
     depends_on:
       - conda-env
