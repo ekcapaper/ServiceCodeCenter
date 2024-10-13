@@ -3,7 +3,10 @@
   "terminal.integrated.profiles.linux": {
     "bash with conda init": {
       "path": "/bin/bash",
-      "args": ["-c", ". /opt/conda/etc/profile.d/conda.sh && conda activate base-python && bash"]
-    }
+      "args": ["-c", ". /opt/conda/etc/profile.d/conda.sh && conda activate base-python && bash"],
+      "env": {
+        "PATH": "/opt/conda/bin:/opt/conda/condabin:/opt/conda/bin:${env:PATH}"
+      }
+    }    
   }
 }
