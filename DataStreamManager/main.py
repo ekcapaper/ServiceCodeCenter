@@ -1,11 +1,8 @@
-# main.py
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-
-import asyncio
 from watchfiles import awatch
-import yaml
 
 
 async def watch_files():
