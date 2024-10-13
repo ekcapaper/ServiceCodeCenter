@@ -2,6 +2,8 @@ import asyncio
 import json
 import os
 import subprocess
+from typing import List
+
 import aiofiles
 
 from contextlib import asynccontextmanager
@@ -10,10 +12,9 @@ import uvicorn
 import yaml
 from fastapi import FastAPI, HTTPException
 from watchfiles import awatch
+from pydantic import BaseModel
 
-
-
-
+from DataScenarioManager import DataScenarioManager
 
 data_scenario_manager_instance = DataScenarioManager()
 
@@ -32,40 +33,32 @@ SCENARIO_BASE_PATH = './scenarios'
 
 
 # 시나리오 목록 조회
+class DataScenarioDto(BaseModel):
+    name: str
+    description: str
+
+class ResponseGetDataScenarios(BaseModel):
+    data_scenarios: List[DataScenarioDto]
+
 @app.get("/scenarios")
-def list_scenarios():
-    scenarios = []
+def get_data_scenarios():
+    data_scenario_dto_list = list(map(lambda data_scenarios:DataScenarioDto(name=data_scenarios.name, description=data_scenarios.description),data_scenario_manager_instance.data_scenario_list))
+    return {
+        "data_scenarios": data_scenario_dto_list
+    }
 
-    # 시나리오 폴더 탐색
-    for scenario_name in os.listdir(SCENARIO_BASE_PATH):
-        scenario_path = os.path.join(SCENARIO_BASE_PATH, scenario_name)
-        scenario_json_path = os.path.join(scenario_path, "scenario.json")
+class RunningDataScenarioDto(BaseModel):
+    uuid: str
 
-        if os.path.isdir(scenario_path) and os.path.exists(scenario_json_path):
-            with open(scenario_json_path, "r") as f:
-                scenario_data = json.load(f)
-                scenarios.append({
-                    "name": scenario_data.get("name"),
-                    "description": scenario_data.get("description")
-                })
+class ResponseRunningDataScenarios(BaseModel):
+    running_data_scenarios: List[RunningDataScenarioDto]
 
-    return {"scenarios": scenarios}
-
-
-# 특정 시나리오 상태 조회
-@app.get("/scenarios/{scenario_name}/status")
-def get_scenario_status(scenario_name: str):
-    scenario_path = os.path.join(SCENARIO_BASE_PATH, scenario_name)
-    if not os.path.exists(scenario_path):
-        raise HTTPException(status_code=404, detail="Scenario not found")
-
-    # 예를 들어, 시나리오가 실행 중인지 확인하는 방법 (단순 예시)
-    pid_file = os.path.join(scenario_path, "pid")
-    if os.path.exists(pid_file):
-        return {"status": "running"}
-    else:
-        return {"status": "stopped"}
-
+@app.get("/running-scenarios")
+def get_running_scenarios():
+    running_data_scenarios = list(map(lambda running_data_scenarios:RunningDataScenarioDto(uuid=running_data_scenarios.uuid), data_scenario_manager_instance.running_data_scenario_list))
+    return {
+        "running_data_scenarios": running_data_scenarios
+    }
 
 # 시나리오 시작
 @app.post("/scenarios/{scenario_name}/start")

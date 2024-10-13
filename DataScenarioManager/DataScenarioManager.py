@@ -18,6 +18,12 @@ class DataScenarioManager:
         self.__data_scenario_list = []
         self.__running_data_scenario_list = []
 
+    def run_scenario(self, scenario_name):
+        pass
+
+    def stop_scenario(self, uid):
+        pass
+
     async def load_projects_dsm(self):
         self.__data_scenario_list = []
         async def load_yaml(file_path):
