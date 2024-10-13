@@ -61,8 +61,7 @@ ENV SHELL=/bin/bash \
 # Use installed git instead of dugite
 ENV USE_LOCAL_GIT true
 
-FROM ubuntu:focal-20240918
-
+# CUSTOM conda
 ARG MINIFORGE_NAME=Miniforge3
 ARG MINIFORGE_VERSION=24.7.1-2
 ARG TARGETPLATFORM
@@ -99,6 +98,7 @@ RUN apt-get update > /dev/null && \
     conda clean --force-pkgs-dirs --all --yes  && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
+# CUSTOM END conda 
 
 # Swtich to Theia user
 USER theia

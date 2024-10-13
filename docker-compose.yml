@@ -1,7 +1,7 @@
 services:
   theia-ide:
     build:
-      context: ./theia-blueprint-ide
+      context: ./theia-blueprint-master
       dockerfile: browser.Dockerfile
     container_name: theia-ide
     ports:
