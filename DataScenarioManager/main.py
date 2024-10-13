@@ -1,32 +1,37 @@
 import asyncio
+import json
+import os
+import subprocess
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+import uvicorn
+from fastapi import FastAPI, HTTPException
 from watchfiles import awatch
 
 
-async def watch_files():
-    async for changes in awatch('/path/to/dir'):
-        print(changes)
+class DataScenarioManager:
+    def __init__(self):
+        self.__projects_path = "./projects"
 
-async def background_temp():
-    while True:
-        print("abcd")
-        await asyncio.sleep(1)
+    async def watch_project_dsm(self):
+        async for changes in awatch(self.__projects_path):
+            print(changes)
+
+    async def background_temp(self):
+        while True:
+            print("abcd")
+            await asyncio.sleep(1)
+
+data_scenario_manager_instance = DataScenarioManager()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
-    asyncio.create_task(background_temp())
+    asyncio.create_task(data_scenario_manager_instance.background_temp())
+    asyncio.create_task(data_scenario_manager_instance.watch_project_dsm())
     yield
     # shutdown
 
-import os
-import json
-import subprocess
-
-import uvicorn
-from fastapi import FastAPI, HTTPException
 
 app = FastAPI(lifespan=lifespan)
 
@@ -116,7 +121,6 @@ def stop_scenario(scenario_name: str):
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
-
 
 # 실행 명령어 (uvicorn을 통해 실행)
 # uvicorn main:app --reload
