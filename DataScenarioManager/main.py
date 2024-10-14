@@ -16,6 +16,7 @@ data_scenario_manager_instance = DataScenarioManager(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
+    asyncio.create_task(data_scenario_manager_instance.load_projects_dsm())
     asyncio.create_task(data_scenario_manager_instance.async_loop())
     yield
     # shutdown

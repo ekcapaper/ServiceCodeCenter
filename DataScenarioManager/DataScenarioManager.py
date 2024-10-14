@@ -47,7 +47,7 @@ class DataScenarioManager:
         for yaml_file in yaml_files:
             try:
                 yaml_dict = await load_yaml(yaml_file)
-                script_path = pathlib.Path(yaml_dict["yaml_file"]).parent / "main.py"
+                script_path = pathlib.Path(yaml_file).parent / "main.py"
                 self.__data_scenario_list.append(
                     DataScenario(
                         name=yaml_dict["name"],
