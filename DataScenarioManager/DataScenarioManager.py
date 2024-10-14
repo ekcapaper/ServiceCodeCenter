@@ -77,7 +77,7 @@ class DataScenarioManager:
         else:
             data_scenario = data_scenario_list[0]
             data_scenario_executor = DataScenarioExecutor(data_scenario)
-            data_scenario_executor.run()
+            data_scenario_executor.start()
             self.__data_scenario_executor_dict[data_scenario_executor.uid_str] = data_scenario_executor
             return True
 

@@ -1,9 +1,10 @@
 import subprocess
+import threading
 
 from DataScenario import DataScenario
 
 
-class DataScenarioExecutor:
+class DataScenarioExecutor(threading.Thread):
     def __init__(self, data_scenario: DataScenario):
         super().__init__()
         self.__data_scenario = data_scenario
@@ -19,6 +20,7 @@ class DataScenarioExecutor:
         self.__is_running = True
         self.__is_started = True
         self.__uid = self.__popen_instance.pid
+        self.__popen_instance.wait()
 
     def stop(self):
         self.request_stop()
