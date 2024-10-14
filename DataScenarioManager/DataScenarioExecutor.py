@@ -35,7 +35,7 @@ class DataScenarioExecutor(threading.Thread):
     def is_running(self):
         if self.__popen_instance is None:
             self.__is_running = False
-        elif self.__popen_instance.poll() is None:
+        elif self.__popen_instance.poll() is not None:
             self.__is_running = False
         return self.__is_running
 
