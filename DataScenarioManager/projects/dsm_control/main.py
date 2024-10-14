@@ -1,35 +1,20 @@
-import fakeredis
-import asyncio
+import uvicorn
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-redis = fakeredis.FakeStrictRedis()
-redis.set("temperature", 0)
+app = FastAPI()
 
-# sample furniture, assume external
-async def stove():
-    while True:
-        temperature = int(redis.get("temperature"))
-        redis.set("temperature", temperature + 1)
-        await asyncio.sleep(1)
+# POST 요청에서 사용할 데이터 모델 정의
+class Message(BaseModel):
+    text: str
 
-# control function, assume external
-async def cooling_stove():
-    while True:
-        temperature = int(redis.get("temperature"))
-        if temperature > 10:
-            redis.set("temperature", temperature - 1)
-        await asyncio.sleep(1)
+@app.get("/")
+async def read_root():
+    return {"message": "Hello, World!"}
 
-'''
-async def stove_temperature():
-    while True:
-        temperature = int(redis.get("temperature"))
-        print(temperature)
-        await asyncio.sleep(1)
-'''
-
-async def main():
-    await asyncio.gather(stove(), cooling_stove())
-    #await asyncio.gather(stove(), cooling_stove(), stove_temperature())
+@app.post("/message")
+async def create_message(message: Message):
+    return {"received": message.text}
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    uvicorn.run(app, host='0.0.0.0', port=8005)
