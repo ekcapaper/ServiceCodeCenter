@@ -18,5 +18,5 @@ class DataScenario:
         return self.__conda_environment
 
     @property
-    def script_path(self):
-        return self.__script_path
+    def script_path_str(self):
+        return str(self.__script_path)

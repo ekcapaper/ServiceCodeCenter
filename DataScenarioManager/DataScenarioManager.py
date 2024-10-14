@@ -47,12 +47,13 @@ class DataScenarioManager:
         for yaml_file in yaml_files:
             try:
                 yaml_dict = await load_yaml(yaml_file)
-                script_path = pathlib.Path(yaml_file).parent / "main.py"
+                script_path = pathlib.Path(str(yaml_file)).parent / "main.py"
+                data_scenario_data = yaml_dict["DataScenario"]
                 self.__data_scenario_list.append(
                     DataScenario(
-                        name=yaml_dict["name"],
-                        description=yaml_dict["description"],
-                        conda_environment=yaml_dict["conda_environment"],
+                        name=data_scenario_data["name"],
+                        description=data_scenario_data["description"],
+                        conda_environment=data_scenario_data["conda-environment"],
                         script_path=script_path
                     )
                 )
