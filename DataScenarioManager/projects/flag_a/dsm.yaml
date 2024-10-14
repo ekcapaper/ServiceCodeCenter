@@ -1,4 +1,0 @@
-DataScenario:
-  name: flag_a
-  description: project flag_a
-  conda-environment: base
