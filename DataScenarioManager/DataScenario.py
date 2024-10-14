@@ -19,4 +19,4 @@ class DataScenario:
 
     @property
     def script_path_str(self):
-        return str(self.__script_path)
+        return str(self.__script_path.resolve())
