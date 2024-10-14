@@ -95,7 +95,7 @@ class DataScenarioManager:
         while True:
             end_executor_uid_list = set()
             for uid, executor_instance in self.__data_scenario_executor_dict.items():
-                if executor_instance.is_started() is True and executor_instance.is_running() is False:
+                if executor_instance.is_started is True and executor_instance.is_running is False:
                     end_executor_uid_list.add(uid)
             for end_executor_uid in end_executor_uid_list:
                 del self.__data_scenario_executor_dict[end_executor_uid]
