@@ -77,7 +77,7 @@ class DataScenarioExecutorDto(BaseModel):
 
 
 class DataScenarioExecutorListDto(BaseModel):
-    data_scenario_executor_list: List[DataScenarioDto]
+    data_scenario_executor_list: List[DataScenarioExecutorDto]
 
 
 from DataScenarioExecutor import DataScenarioExecutor
