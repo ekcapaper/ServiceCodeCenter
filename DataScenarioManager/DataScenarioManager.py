@@ -91,6 +91,7 @@ class DataScenarioManager:
         return asyncio.gather(self.watch_project_dsm(), self.delete_end_data_scenario_executor())
 
     # delete end data scenario
+    # GC Collector
     async def delete_end_data_scenario_executor(self):
         while True:
             end_executor_uid_list = set()
