@@ -4,14 +4,14 @@ import asyncio
 redis = fakeredis.FakeStrictRedis()
 redis.set("temperature", 0)
 
-# sample furniture
+# sample furniture, assume external
 async def stove():
     while True:
         temperature = int(redis.get("temperature"))
         redis.set("temperature", temperature + 1)
         await asyncio.sleep(1)
 
-# control function
+# control function, assume external
 async def cooling_stove():
     while True:
         temperature = int(redis.get("temperature"))
