@@ -89,7 +89,7 @@ def convert_data_scenario_executor_to_data_scenario_executor_dto(data_scenario_e
         description=data_scenario_executor.data_scenario.description,
         conda_environment=data_scenario_executor.data_scenario.conda_environment,
         script_path=data_scenario_executor.data_scenario.script_path_str,
-        uid=data_scenario_executor.uid,
+        uid=data_scenario_executor.uid_str,
     )
 
 

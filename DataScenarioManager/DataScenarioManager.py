@@ -78,7 +78,7 @@ class DataScenarioManager:
             data_scenario = data_scenario_list[0]
             data_scenario_executor = DataScenarioExecutor(data_scenario)
             data_scenario_executor.run()
-            self.__data_scenario_executor_dict[data_scenario_executor.uid] = data_scenario_executor
+            self.__data_scenario_executor_dict[data_scenario_executor.uid_str] = data_scenario_executor
             return True
 
     def stop_scenario(self, uid):

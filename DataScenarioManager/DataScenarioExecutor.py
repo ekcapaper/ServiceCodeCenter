@@ -38,8 +38,8 @@ class DataScenarioExecutor:
         return self.__is_running
 
     @property
-    def uid(self):
-        return self.__uid
+    def uid_str(self):
+        return str(self.__uid)
 
     @property
     def data_scenario(self):
