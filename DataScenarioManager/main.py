@@ -103,24 +103,24 @@ def get_data_scenarios_running():
         "data_scenario_executor_list": data_scenario_executor_list
     }
 
-@app.get("/scenarios/running/{scenario_uid}")
-def get_data_scenario_running(scenario_uid: str):
+@app.get("/scenarios/running/{running_uid}")
+def get_data_scenario_running(running_uid: str):
     try:
         return convert_data_scenario_executor_to_data_scenario_executor_dto(
-            data_scenario_manager_instance.get_data_scenario_executor(scenario_uid)
+            data_scenario_manager_instance.get_data_scenario_executor(running_uid)
         )
     except KeyError:
         raise HTTPException(status_code=404, detail="scenario not found")
 
 # 시나리오 정지
-@app.post("/scenarios/running/{scenario_uid}/stop")
-def stop_scenario(scenario_uid: str):
-    data_scenario_manager_instance.stop_scenario(scenario_uid)
+@app.post("/scenarios/running/{running_uid}/stop")
+def stop_scenario(running_uid: str):
+    data_scenario_manager_instance.stop_scenario(running_uid)
     return {"message": "Request to stop scenario"}
 
-@app.post("/scenarios/running/{scenario_uid}/kill")
-def stop_scenario(scenario_uid: str):
-    data_scenario_manager_instance.stop_scenario(scenario_uid)
+@app.post("/scenarios/running/{running_uid}/kill")
+def stop_scenario(running_uid: str):
+    data_scenario_manager_instance.stop_scenario(running_uid)
     return {"message": "Request to kill scenario"}
 
 
