@@ -1,3 +1,4 @@
 DataScenario:
   name: flag_a
-  desc: project flag_a
+  description: project flag_a
+  conda-environment: base

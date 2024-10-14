@@ -1,8 +1,9 @@
 class DataScenario:
-    def __init__(self, name, description):
+    def __init__(self, name, description, conda_environment, script_path):
         self.__name = name
         self.__description = description
-    # conda env 추가 필요
+        self.__conda_environment = conda_environment
+        self.__script_path = script_path
 
     @property
     def name(self):
@@ -11,3 +12,11 @@ class DataScenario:
     @property
     def description(self):
         return self.__description
+
+    @property
+    def conda_environment(self):
+        return self.__conda_environment
+
+    @property
+    def script_path(self):
+        return self.__script_path
