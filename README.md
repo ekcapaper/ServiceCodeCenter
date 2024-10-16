@@ -1,6 +1,8 @@
 # DataScenarioCenter
 
-DataScenarioCenter는 데이터 기반 시나리오를 위한 통합 개발 및 실행 환경입니다. 개발 도구, 가상 환경, 프로젝트 관리, 실행 도구를 Docker 기반 솔루션으로 결합하여 플랫폼을 제공합니다.
+DataScenarioCenter는 데이터 기반 시나리오를 위한 통합 개발 및 실행 플랫폼입니다.
+
+개발 도구, 프로젝트 관리, 실행 도구를 Docker 기반의 솔루션으로 결합하여 기능을 제공합니다.
 
 ## 설계 및 기획 문서
 https://www.ekcapaper.com/121b3899-980a-80c6-9cd0-f49a0ffc61b4
