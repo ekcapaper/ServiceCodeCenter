@@ -1,0 +1,4 @@
+DataScenario:
+  name: hello-file
+  description: hello world
+  conda-environment: base

@@ -1,23 +1,9 @@
 services:
-  conda-env:
-    image: condaforge/miniforge3
-    container_name: conda-env
-    volumes:
-      - conda_data:/opt/conda
-
   theia-ide:
     build:
-        context: ./theia-blueprint-ide
-        dockerfile: browser.Dockerfile
+      context: ./theia-blueprint-master
+      dockerfile: browser.Dockerfile
     container_name: theia-ide
-    depends_on:
-      - conda-env
-    volumes:
-      - conda_data:/opt/conda
-    environment:
-      - PATH=/opt/conda:$PATH
     ports:
       - 3000:3000
-
-volumes:
-    conda_data:
+      
