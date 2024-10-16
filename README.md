@@ -33,7 +33,7 @@ https://www.ekcapaper.com/
 ## 사용 방법
 
 ## 데이터 시나리오 프로젝트 구조
-- `main.py`: 모든 시나리오의 진입점
+- `main.py`: 시나리오의 진입점
 - `dsm.yaml`: 시나리오 메타데이터 설정 파일
 - `application.yaml`: Conda 환경 명세 파일
 
