@@ -44,14 +44,11 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install poetry
-# 
+#
 
 # Project
-COPY pyproject.toml poetry.lock* ./
-RUN poetry config virtualenvs.create false \
-  && poetry install --no-interaction --no-ansi
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
 
 ENV PYTHONPATH=/app
 COPY .. .
@@ -63,4 +60,4 @@ RUN chmod 777 /opt/conda/envs
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "python3", "/app/app/main.py"]
+CMD ["python3", "/app/app/main.py"]
