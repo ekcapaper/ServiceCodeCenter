@@ -101,7 +101,7 @@ RUN apt-get update > /dev/null && \
 # CUSTOM END conda 
 
 # Swtich to Theia user
-USER theia
+# USER theia
 WORKDIR /home/theia/applications/browser
 
 # Launch the backend application via node

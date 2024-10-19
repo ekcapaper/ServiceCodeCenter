@@ -1,9 +1,19 @@
 services:
-  theia-ide:
+  data-scenario-center-ide:
     build:
-      context: ./theia-blueprint-master
+      context: ./data-scenario-center-ide
       dockerfile: browser.Dockerfile
-    container_name: theia-ide
+    container_name: data-scenario-center-ide
     ports:
       - 3000:3000
-      
+  data-scenario-center-spike:
+    build:
+      context: ./data-scenario-center-spike
+      dockerfile: Dockerfile
+    container_name: data-scenario-center-spike
+    volumes:
+      - conda_volume:/opt/conda/envs
+    ports:
+      - 8000:8000
+volumes:
+  conda_volume:
