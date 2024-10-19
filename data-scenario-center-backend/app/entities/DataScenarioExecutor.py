@@ -14,22 +14,9 @@ class DataScenarioExecutor(threading.Thread):
         self.__uid = None
 
     def run(self):
-        script_to_run = os.path.normpath(self.__data_scenario.script_path_str)
-
-        conda_environment = self.__data_scenario.conda_environment
-
-        command = [
-            "conda", "run",
-            "-n", "base",
-            "python", script_to_run
-        ]
-        self.__popen_instance = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True,
-            text=True
-        )
+        script_to_run = self.__data_scenario.script_path_str
+        command = f"conda run -n {self.__data_scenario.conda_environment} python {script_to_run}"
+        self.__popen_instance = subprocess.Popen(command, shell=True)
         self.__is_running = True
         self.__is_started = True
         self.__uid = self.__popen_instance.pid
