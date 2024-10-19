@@ -39,24 +39,28 @@ RUN apt-get update > /dev/null && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
 
+# Python install
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install poetry
+# 
 
+# Project
 COPY pyproject.toml poetry.lock* ./
 RUN poetry config virtualenvs.create false \
   && poetry install --no-interaction --no-ansi
+
+ENV PYTHONPATH=/app
+COPY . .
+#
 
 # CUSTOM
 RUN chmod 777 /opt/conda/envs
 #CUSTOM END
 
-ENV PYTHONPATH=/app
-COPY . .
-
 EXPOSE 8000
 
-CMD ["python3", "/app/app/main.py"]
+CMD ["poetry", "run", "python3", "/app/app/main.py"]
