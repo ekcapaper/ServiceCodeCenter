@@ -14,6 +14,7 @@ from app.entities.DataScenarioExecutor import DataScenarioExecutor
 class DataScenarioManager:
     def __init__(self, projects_path="./projects"):
         self.__projects_path = projects_path
+        print(self.__projects_path)
         self.__data_scenario_list = []
         self.__data_scenario_executor_dict = {}
         self.__logger = logging.Logger(self.__class__.__name__)
