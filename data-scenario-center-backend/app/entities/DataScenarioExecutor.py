@@ -28,9 +28,9 @@ class DataScenarioExecutor(threading.Thread):
         # 종료 코드 확인
         return_code = self.__popen_instance.returncode
 
-        print(f"표준 출력: {stdout}")
-        print(f"표준 에러: {stderr}")
-        print(f"종료 코드: {return_code}")
+        #print(f"표준 출력: {stdout}")
+        #print(f"표준 에러: {stderr}")
+        #print(f"종료 코드: {return_code}")
 
     def stop(self):
         self.request_stop()
