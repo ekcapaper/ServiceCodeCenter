@@ -1,7 +1,7 @@
 import subprocess
 import threading
 
-from DataScenario import DataScenario
+from app.entities.DataScenario import DataScenario
 
 
 class DataScenarioExecutor(threading.Thread):
