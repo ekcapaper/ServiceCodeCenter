@@ -1,5 +1,5 @@
 services:
-  theia-ide:
+  data-scenario-center-ide:
     build:
       context: ./data-scenario-center-ide
       dockerfile: browser.Dockerfile
