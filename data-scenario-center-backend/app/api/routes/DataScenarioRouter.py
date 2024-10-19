@@ -1,10 +1,8 @@
-
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from app.core.DataScenarioManager import data_scenario_manager_instance
 
 router = APIRouter()
-from app.core.DataScenarioManager import data_scenario_manager_instance
 
 # 시나리오 목록 조회
 class DataScenarioDto(BaseModel):
