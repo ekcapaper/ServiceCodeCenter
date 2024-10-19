@@ -18,7 +18,6 @@ class DataScenarioManager:
             self.__projects_path = os.path.dirname(os.path.abspath(sys.argv[0]))
         else:
             self.__projects_path = projects_path
-        print(projects_path)
         self.__data_scenario_list = []
         self.__data_scenario_executor_dict = {}
         self.__logger = logging.Logger(self.__class__.__name__)
