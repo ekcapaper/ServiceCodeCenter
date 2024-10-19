@@ -54,8 +54,9 @@ RUN poetry config virtualenvs.create false \
 RUN chmod 777 /opt/conda/envs
 #CUSTOM END
 
+ENV PYTHONPATH=/app
 COPY . .
 
 EXPOSE 8000
 
-CMD ["python3", "/app/main.py"]
+CMD ["python3", "/app/app/main.py"]
