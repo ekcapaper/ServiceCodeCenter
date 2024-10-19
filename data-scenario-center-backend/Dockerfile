@@ -48,6 +48,7 @@ RUN apt-get update && apt-get install -y \
 
 # Project
 COPY requirements.txt .
+RUN pip3 install -r requirements.txt
 
 ENV PYTHONPATH=/app
 COPY . .
