@@ -54,7 +54,7 @@ RUN poetry config virtualenvs.create false \
   && poetry install --no-interaction --no-ansi
 
 ENV PYTHONPATH=/app
-COPY . .
+COPY .. .
 #
 
 # CUSTOM
