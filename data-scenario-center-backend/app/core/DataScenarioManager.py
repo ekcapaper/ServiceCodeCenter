@@ -1,22 +1,23 @@
 import asyncio
 import logging
 import os
-import aiofiles
+import sys
 import pathlib
 
-import yaml
-from watchfiles import awatch
-import os
-
 import aiofiles
 import yaml
 from watchfiles import awatch
-from DataScenario import DataScenario
-from DataScenarioExecutor import DataScenarioExecutor
+
+from app.entities.DataScenario import DataScenario
+from app.entities.DataScenarioExecutor import DataScenarioExecutor
+
 
 class DataScenarioManager:
-    def __init__(self, projects_path="./projects"):
-        self.__projects_path = projects_path
+    def __init__(self, projects_path=None):
+        if projects_path is None:
+            self.__projects_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+        else:
+            self.__projects_path = projects_path
         self.__data_scenario_list = []
         self.__data_scenario_executor_dict = {}
         self.__logger = logging.Logger(self.__class__.__name__)
@@ -38,6 +39,7 @@ class DataScenarioManager:
                     if file.endswith('dsm.yaml'):
                         yaml_files.append(os.path.join(root, file))
             return yaml_files
+
         # task
         # 1. reset
         self.reset_projects_dsm()
@@ -106,6 +108,9 @@ class DataScenarioManager:
         async for changes in awatch(self.__projects_path):
             for change in changes:
                 pass
+
+
+data_scenario_manager_instance = DataScenarioManager()
 
 if __name__ == '__main__':
     dsm = DataScenarioManager()

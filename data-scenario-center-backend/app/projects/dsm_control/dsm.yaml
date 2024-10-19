@@ -1,4 +1,4 @@
 DataScenario:
-  name: hello-file
+  name: dsm_control
   description: hello world
   conda-environment: base

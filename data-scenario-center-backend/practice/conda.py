@@ -4,7 +4,7 @@ import subprocess
 env_name = 'base'
 
 # 실행할 Python 스크립트 또는 명령
-script_to_run = 'main.py'
+script_to_run = './main.py'
 
 # Conda 환경을 활성화하고 Python 스크립트를 실행하는 명령
 command = f"conda run -n {env_name} python {script_to_run}"

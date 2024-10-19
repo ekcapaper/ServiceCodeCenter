@@ -1,28 +1,10 @@
-import asyncio
-from contextlib import asynccontextmanager
-from fastapi import HTTPException
-from typing import List
-
-import uvicorn
-from fastapi import FastAPI
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from DataScenarioManager import DataScenarioManager
+from app.core.DataScenarioManager import data_scenario_manager_instance
 
-data_scenario_manager_instance = DataScenarioManager(
-    projects_path="./projects"
-)
+router = APIRouter()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # start
-    asyncio.create_task(data_scenario_manager_instance.load_projects_dsm())
-    asyncio.create_task(data_scenario_manager_instance.async_loop())
-    yield
-    # shutdown
-
-
-app = FastAPI(lifespan=lifespan)
 
 # 시나리오 목록 조회
 class DataScenarioDto(BaseModel):
@@ -33,7 +15,7 @@ class DataScenarioDto(BaseModel):
 
 
 class DataScenarioListDto(BaseModel):
-    data_scenario_list: List[DataScenarioDto]
+    data_scenario_list: list[DataScenarioDto]
 
 
 def convert_data_scenario_to_data_scenario_dto(data_scenario):
@@ -45,7 +27,7 @@ def convert_data_scenario_to_data_scenario_dto(data_scenario):
     )
 
 
-@app.get("/scenarios", response_model=DataScenarioListDto)
+@router.get("/scenarios", response_model=DataScenarioListDto)
 def get_data_scenarios():
     data_scenario_dto_list = list(
         map(convert_data_scenario_to_data_scenario_dto, data_scenario_manager_instance.get_data_scenario_list()))
@@ -53,11 +35,13 @@ def get_data_scenarios():
         "data_scenario_list": data_scenario_dto_list
     }
 
+
 class MessageDto(BaseModel):
     message: str
 
+
 # 시나리오 시작
-@app.post("/scenarios/{scenario_name}/start")
+@router.post("/scenarios/{scenario_name}/start")
 def start_scenario(scenario_name: str):
     result = data_scenario_manager_instance.run_scenario(scenario_name)
     if result:
@@ -77,10 +61,10 @@ class DataScenarioExecutorDto(BaseModel):
 
 
 class DataScenarioExecutorListDto(BaseModel):
-    data_scenario_executor_list: List[DataScenarioExecutorDto]
+    data_scenario_executor_list: list[DataScenarioExecutorDto]
 
 
-from DataScenarioExecutor import DataScenarioExecutor
+from app.entities.DataScenarioExecutor import DataScenarioExecutor
 
 
 def convert_data_scenario_executor_to_data_scenario_executor_dto(data_scenario_executor: DataScenarioExecutor):
@@ -93,18 +77,19 @@ def convert_data_scenario_executor_to_data_scenario_executor_dto(data_scenario_e
     )
 
 
-@app.get("/scenarios/running", response_model=DataScenarioExecutorListDto)
+@router.get("/scenarios/running", response_model=DataScenarioExecutorListDto)
 def get_data_scenarios_running():
     data_scenario_executor_list = list(
         map(convert_data_scenario_executor_to_data_scenario_executor_dto,
             list(data_scenario_manager_instance.get_data_scenario_executor_dict().values())
-        )
+            )
     )
     return {
         "data_scenario_executor_list": data_scenario_executor_list
     }
 
-@app.get("/scenarios/running/{running_uid}")
+
+@router.get("/scenarios/running/{running_uid}")
 def get_data_scenario_running(running_uid: str):
     try:
         return convert_data_scenario_executor_to_data_scenario_executor_dto(
@@ -113,20 +98,15 @@ def get_data_scenario_running(running_uid: str):
     except KeyError:
         raise HTTPException(status_code=404, detail="scenario not found")
 
+
 # 시나리오 정지
-@app.post("/scenarios/running/{running_uid}/stop")
+@router.post("/scenarios/running/{running_uid}/stop")
 def stop_scenario(running_uid: str):
     data_scenario_manager_instance.stop_scenario(running_uid)
     return {"message": "Request to stop scenario"}
 
-@app.post("/scenarios/running/{running_uid}/kill")
+
+@router.post("/scenarios/running/{running_uid}/kill")
 def stop_scenario(running_uid: str):
     data_scenario_manager_instance.stop_scenario(running_uid)
     return {"message": "Request to kill scenario"}
-
-
-if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
-
-# 실행 명령어 (uvicorn을 통해 실행)
-# uvicorn main:app --reload

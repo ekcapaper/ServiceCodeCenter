@@ -14,6 +14,17 @@ services:
     volumes:
       - conda_volume:/opt/conda/envs
     ports:
+      - 8005:8000
+
+  data-scenario-center-backend:
+    build:
+      context: ./data-scenario-center-backend
+      dockerfile: Dockerfile
+    container_name: data-scenario-center-backend
+    volumes:
+      - conda_volume:/opt/conda/envs
+    ports:
       - 8000:8000
+    
 volumes:
   conda_volume:
