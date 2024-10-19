@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import sys
 import pathlib
 
 import aiofiles
@@ -12,9 +13,11 @@ from app.entities.DataScenarioExecutor import DataScenarioExecutor
 
 
 class DataScenarioManager:
-    def __init__(self, projects_path="./projects"):
-        self.__projects_path = projects_path
-        print(self.__projects_path)
+    def __init__(self, projects_path=None):
+        if projects_path is None:
+            self.__projects_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+        else:
+            self.__projects_path = projects_path
         self.__data_scenario_list = []
         self.__data_scenario_executor_dict = {}
         self.__logger = logging.Logger(self.__class__.__name__)
