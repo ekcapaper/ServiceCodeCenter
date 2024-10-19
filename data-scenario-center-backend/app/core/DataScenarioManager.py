@@ -1,18 +1,14 @@
 import asyncio
 import logging
-import os
-import aiofiles
 import pathlib
 
-import yaml
-from watchfiles import awatch
 import os
 
 import aiofiles
 import yaml
 from watchfiles import awatch
-from DataScenario import DataScenario
-from DataScenarioExecutor import DataScenarioExecutor
+from app.entities.DataScenario import DataScenario
+from app.entities.DataScenarioExecutor import DataScenarioExecutor
 
 class DataScenarioManager:
     def __init__(self, projects_path="./projects"):
@@ -106,6 +102,11 @@ class DataScenarioManager:
         async for changes in awatch(self.__projects_path):
             for change in changes:
                 pass
+
+
+data_scenario_manager_instance = DataScenarioManager(
+    projects_path="../projects"
+)
 
 if __name__ == '__main__':
     dsm = DataScenarioManager()
