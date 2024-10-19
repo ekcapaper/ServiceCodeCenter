@@ -1,14 +1,15 @@
 import asyncio
 import logging
-import pathlib
-
 import os
+import pathlib
 
 import aiofiles
 import yaml
 from watchfiles import awatch
+
 from app.entities.DataScenario import DataScenario
 from app.entities.DataScenarioExecutor import DataScenarioExecutor
+
 
 class DataScenarioManager:
     def __init__(self, projects_path="./projects"):
@@ -34,6 +35,7 @@ class DataScenarioManager:
                     if file.endswith('dsm.yaml'):
                         yaml_files.append(os.path.join(root, file))
             return yaml_files
+
         # task
         # 1. reset
         self.reset_projects_dsm()

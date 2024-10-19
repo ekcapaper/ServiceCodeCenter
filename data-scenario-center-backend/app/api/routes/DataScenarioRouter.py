@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
 from app.core.DataScenarioManager import data_scenario_manager_instance
 
 router = APIRouter()
+
 
 # 시나리오 목록 조회
 class DataScenarioDto(BaseModel):
@@ -33,8 +35,10 @@ def get_data_scenarios():
         "data_scenario_list": data_scenario_dto_list
     }
 
+
 class MessageDto(BaseModel):
     message: str
+
 
 # 시나리오 시작
 @router.post("/scenarios/{scenario_name}/start")
@@ -78,11 +82,12 @@ def get_data_scenarios_running():
     data_scenario_executor_list = list(
         map(convert_data_scenario_executor_to_data_scenario_executor_dto,
             list(data_scenario_manager_instance.get_data_scenario_executor_dict().values())
-        )
+            )
     )
     return {
         "data_scenario_executor_list": data_scenario_executor_list
     }
+
 
 @router.get("/scenarios/running/{running_uid}")
 def get_data_scenario_running(running_uid: str):
@@ -93,16 +98,15 @@ def get_data_scenario_running(running_uid: str):
     except KeyError:
         raise HTTPException(status_code=404, detail="scenario not found")
 
+
 # 시나리오 정지
 @router.post("/scenarios/running/{running_uid}/stop")
 def stop_scenario(running_uid: str):
     data_scenario_manager_instance.stop_scenario(running_uid)
     return {"message": "Request to stop scenario"}
 
+
 @router.post("/scenarios/running/{running_uid}/kill")
 def stop_scenario(running_uid: str):
     data_scenario_manager_instance.stop_scenario(running_uid)
     return {"message": "Request to kill scenario"}
-
-
-
