@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './index.css';
 import {
     AppstoreOutlined,
@@ -12,7 +12,7 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
-
+import { Flex, Splitter, Typography } from 'antd';
 const { Content, Footer, Sider } = Layout;
 
 const siderStyle: React.CSSProperties = {
@@ -26,19 +26,14 @@ const siderStyle: React.CSSProperties = {
     scrollbarColor: 'unset',
 };
 
-const items: MenuProps['items'] = [
-    UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
-    BarChartOutlined,
-    CloudOutlined,
-    AppstoreOutlined,
-    TeamOutlined,
-    ShopOutlined,
-].map((icon, index) => ({
+const menuItems = [
+    { icon: AppstoreOutlined, label: 'Data Scenario' },
+];
+
+const items: MenuProps['items'] = menuItems.map((item, index) => ({
     key: String(index + 1),
-    icon: React.createElement(icon),
-    label: `nav ${index + 1}`,
+    icon: React.createElement(item.icon),
+    label: item.label,
 }));
 
 const App: React.FC = () => {
@@ -46,14 +41,63 @@ const App: React.FC = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
+    const [selectedMenu, setSelectedMenu] = useState('1');
+
+    const handleMenuClick = (info: { key: string }) => {
+        setSelectedMenu(info.key);
+    };
+
+    const renderContent = () => {
+        const menuItem = menuItems[parseInt(selectedMenu) - 1];
+        if(parseInt(selectedMenu) === 1)
+        {
+            return (
+                <div>
+                    <Splitter style={{ height: 1000, boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
+                        <Splitter.Panel defaultSize="70%" min="20%" max="70%">
+
+                            <h2>{menuItem.label} Content11111</h2>
+                            <h2>{menuItem.label} Content11111</h2>
+                            <p>This is the content for {menuItem.label}.</p>
+                        </Splitter.Panel>
+                        <Splitter.Panel>
+                        </Splitter.Panel>
+                    </Splitter>
+
+
+                </div>
+            );
+        }
+
+        return (
+            <div>
+                <h2>{menuItem.label} Content111</h2>
+                <p>This is the content for {menuItem.label}.</p>
+                {
+                    Array.from({ length: 20 }, (_, index) => (
+                        <React.Fragment key={index}>
+                            <p>Additional content for {menuItem.label}</p>
+                        </React.Fragment>
+                    ))
+                }
+            </div>
+        );
+    };
+
     return (
         <Layout hasSider>
             <Sider style={siderStyle}>
                 <div className="demo-logo-vertical" />
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
+                <Menu
+                    theme="dark"
+                    mode="inline"
+                    defaultSelectedKeys={['1']}
+                    items={items}
+                    onClick={handleMenuClick}
+                />
             </Sider>
             <Layout style={{ marginInlineStart: 200 }}>
-                <Content style={{ margin: '0px 0px 0', overflow: 'initial' }}>
+                <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
                     <div
                         style={{
                             padding: 24,
@@ -62,16 +106,7 @@ const App: React.FC = () => {
                             borderRadius: borderRadiusLG,
                         }}
                     >
-                        <p>long content</p>
-                        {
-                            // indicates very long content
-                            Array.from({ length: 100 }, (_, index) => (
-                                <React.Fragment key={index}>
-                                    {index % 20 === 0 && index ? 'more' : '...'}
-                                    <br />
-                                </React.Fragment>
-                            ))
-                        }
+                        {renderContent()}
                     </div>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>

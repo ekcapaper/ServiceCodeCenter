@@ -25,6 +25,9 @@ services:
       - conda_volume:/opt/conda/envs
     ports:
       - 8000:8000
-    
+
+  
+
+
 volumes:
   conda_volume:
