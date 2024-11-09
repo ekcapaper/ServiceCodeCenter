@@ -7,118 +7,98 @@ from typing import Optional
 
 import aiofiles
 import yaml
+from fastapi import Depends
 from watchfiles import awatch
 
 from app.entities.DataScenario import DataScenario
 from app.entities.DataScenarioExecutor import DataScenarioExecutor
+from app.core.DataScenarioCenterSettings import DataScenarioCenterSettings
+from loguru import logger
 
-class ScenarioError(Exception):
+class DataScenarioError(Exception):
     pass
 
-class ScenarioNotFoundError(ScenarioError):
+class DataScenarioNotFoundError(DataScenarioError):
     pass
 
 
 class DataScenarioManager:
-    def __init__(self, projects_path=None):
-        if projects_path is None:
-            self.__projects_path = os.path.dirname(os.path.abspath(sys.argv[0]))
-        else:
-            self.__projects_path = projects_path
-        self.__data_scenario_list = []
-        self.__data_scenario_executor_dict = {}
-        self.__logger = logging.Logger(self.__class__.__name__)
+    __instance = None
 
-    def reset_projects_dsm(self):
-        self.__data_scenario_list = []
+    def __init__(self, data_scenario_center_settings: DataScenarioCenterSettings):
+        self.__logger = logger.bind(class_name=self.__class__.__name__)
+        self.__data_scenario_center_settings = data_scenario_center_settings
 
-    async def load_projects_dsm(self):
-        # inner function
+        self.__data_scenario_executors = {}
+
+    @classmethod
+    def get_instance(cls, data_scenario_center_settings: DataScenarioCenterSettings):
+        if cls.__instance is None:
+            cls.__instance = cls(data_scenario_center_settings)
+        return cls.__instance
+
+    # data scenario functions
+    def start_data_scenario(self, name: str):
+        self.get_data_scenario(name).start()
+
+    async def stop_data_scenario(self, name: str):
+        await self.get_data_scenario(name).stop()
+
+    def get_data_scenario(self, name: str) -> DataScenarioExecutor:
+        return self.__data_scenario_executors[name]
+
+    @property
+    def data_scenario_executors(self):
+        return self.__data_scenario_executors
+
+    @property
+    def data_scenarios(self):
+        return list(map(lambda x:x.data_scenario, self.data_scenario_executors.values()))
+
+    # data scenarios function
+    async def refresh_data_scenario(self):
         async def load_yaml(file_path):
             async with aiofiles.open(file_path, mode='r') as file:
                 contents = await file.read()
                 return yaml.safe_load(contents)
 
-        def get_dsm_yaml_file_paths(directory):
+        def search_paths_data_scenario_yaml_file(directory):
             yaml_files = []
             for root, dirs, files in os.walk(directory):
                 for file in files:
-                    if file.endswith('dsm.yaml'):
+                    if file.endswith('data-scenario.yaml'):
                         yaml_files.append(os.path.join(root, file))
             return yaml_files
 
-        # task
-        # 1. reset
-        self.reset_projects_dsm()
-        # 2. get paths
-        yaml_files = get_dsm_yaml_file_paths(self.__projects_path)
-        # 3. load yaml
-        for yaml_file in yaml_files:
+        # 1. stop executors
+        for data_scenario_name in self.__data_scenario_executors.keys():
+            await self.stop_data_scenario(data_scenario_name)
+
+        # 2. reset
+        self.__data_scenario_executors = {}
+
+        # 3. reload
+        data_scenario_yaml_paths = search_paths_data_scenario_yaml_file(self.__data_scenario_center_settings.projects_path)
+        for data_scenario_yaml_path in data_scenario_yaml_paths:
+            data_scenario_yaml_path = str(data_scenario_yaml_path)
             try:
-                yaml_dict = await load_yaml(yaml_file)
-                script_path = pathlib.Path(str(yaml_file)).parent / "main.py"
+                yaml_dict = await load_yaml(data_scenario_yaml_path)
+                script_path = pathlib.Path(str(data_scenario_yaml_path)).parent / "main.py"
                 data_scenario_data = yaml_dict["DataScenario"]
-                self.__data_scenario_list.append(
-                    DataScenario(
-                        name=data_scenario_data["name"],
-                        description=data_scenario_data["description"],
-                        conda_environment=data_scenario_data["conda-environment"],
-                        script_path=script_path
-                    )
-                )
+                data_scenario = DataScenario(
+                                    name=data_scenario_data["name"],
+                                    description=data_scenario_data["description"],
+                                    conda_environment=data_scenario_data["conda-environment"],
+                                    script_path=script_path
+                                )
+                data_scenario_executor = DataScenarioExecutor(data_scenario)
+                self.__data_scenario_executors[data_scenario.name] = data_scenario_executor
             except KeyError as ke:
-                self.__logger.error(f"{yaml_file} is not enough values")
+                self.__logger.error(f"{data_scenario_yaml_path} is not enough values")
                 self.__logger.error(ke)
-
-    def get_data_scenario_list(self):
-        return self.__data_scenario_list
-
-    def get_data_scenario_executor_dict(self):
-        return self.__data_scenario_executor_dict
-
-    def get_data_scenario_executor(self, executor_uid):
-        return self.__data_scenario_executor_dict[executor_uid]
-
-    def run_scenario(self, scenario_name) -> str:
-        data_scenario_list = list(filter(lambda scenario: scenario.name == scenario_name, self.__data_scenario_list))
-        if len(data_scenario_list) == 0:
-            raise ScenarioNotFoundError()
-        else:
-            data_scenario = data_scenario_list[0]
-            data_scenario_executor = DataScenarioExecutor(data_scenario)
-            data_scenario_executor.start()
-            self.__data_scenario_executor_dict[data_scenario_executor.uid_str] = data_scenario_executor
-            return data_scenario_executor.uid_str
-
-    def stop_scenario(self, uid):
-        self.__data_scenario_executor_dict[uid].stop()
-
-    def kill_scenario(self, uid):
-        self.__data_scenario_executor_dict[uid].stop_force()
-
-    async def async_loop(self):
-        return asyncio.gather(self.watch_project_dsm(), self.delete_end_data_scenario_executor())
-
-    # delete end data scenario
-    # GC Collector
-    async def delete_end_data_scenario_executor(self):
-        while True:
-            end_executor_uid_list = set()
-            for uid, executor_instance in self.__data_scenario_executor_dict.items():
-                if executor_instance.is_started is True and executor_instance.is_running is False:
-                    end_executor_uid_list.add(uid)
-            for end_executor_uid in end_executor_uid_list:
-                del self.__data_scenario_executor_dict[end_executor_uid]
-            await asyncio.sleep(5)
-
-    async def watch_project_dsm(self):
-        async for changes in awatch(self.__projects_path):
-            for change in changes:
-                pass
+                
+        # 4. recover status(active)
 
 
-data_scenario_manager_instance = DataScenarioManager()
-
-if __name__ == '__main__':
-    dsm = DataScenarioManager()
-    asyncio.run(dsm.load_projects_dsm())
+def get_data_scenario_manager_fastapi(data_scenario_center_settings: DataScenarioCenterSettings = Depends(DataScenarioCenterSettings)) -> DataScenarioManager:
+    return DataScenarioManager.get_instance(data_scenario_center_settings)
