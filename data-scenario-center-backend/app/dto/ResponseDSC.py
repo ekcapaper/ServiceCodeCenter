@@ -4,6 +4,6 @@ from app.dto.CamelModel import CamelModel
 T = TypeVar('T')
 
 class ResponseDSC(CamelModel, Generic[T]):
-    success: bool
+    status: str = "success"
     data: Optional[T] = None
     error: Optional[str] = None
