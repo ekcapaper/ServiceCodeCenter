@@ -6,8 +6,6 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
-from app.core.DataScenarioCenterSettings import DataScenarioCenterSettings
-from app.core.DataScenarioManager import DataScenarioManager, get_data_scenario_manager_fastapi
 
 # logging level
 logging.basicConfig(level=logging.DEBUG)

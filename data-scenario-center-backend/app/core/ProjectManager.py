@@ -1,77 +1,64 @@
-import os
-import hashlib
-import asyncio
-import logging
-import os
-import sys
-import pathlib
-from typing import Optional
+import copy
 
-import aiofiles
-import yaml
-from fastapi import Depends
-from watchfiles import awatch
+from app.dto.project.CreateProjectDto import CreateProjectDto
+from app.dto.project.GetProjectDto import GetProjectDto
+from app.dto.project.PatchProjectDto import PatchProjectDto
 
-class ProjectInfoManager:
-    def __init__(self, project_folder_path):
-        self.project_folder_path = project_folder_path
-        self.projects_info = {}
+from app.core.ProjectInfoManager import project_info_manager_instance
+from app.core.ProjectExecutionManager import project_execution_manager_instance
 
-    def convert_project_info_to_project_info_dto(self, project_info):
-        pass
 
-    def get_project(self, project_uid):
-        pass
+# 중복 코드
+# dict -> dto 필요
+class ProjectManager:
+    project_info_manager = project_info_manager_instance
+    project_execution_manager = project_execution_manager_instance
+    
+    def create_project(self, create_project_dto: CreateProjectDto):
+        project_info_dto = project_info_manager_instance.create_project(create_project_dto)
+        project_dto = {
+                "id": project_info_dto["id"],
+                "name": project_info_dto["name"],
+                "description": project_info_dto["description"],
+                "conda_environment": project_info_dto["conda_environment"],
+                "target_state": project_info_dto["target_state"],
+                "current_state": project_execution_manager_instance.check_running_project(project_info_dto["id"])
+        }
+        return project_dto
+    
+    def get_project(self, id_):
+        project_info_dto = project_info_manager_instance.get_project(id_)
+        project_dto = {
+                "id": project_info_dto["id"],
+                "name": project_info_dto["name"],
+                "description": project_info_dto["description"],
+                "conda_environment": project_info_dto["conda_environment"],
+                "target_state": project_info_dto["target_state"],
+                "current_state": project_execution_manager_instance.check_running_project(project_info_dto["id"])
+        }
+        return project_dto
 
     def get_projects(self):
-        pass
+        projects = []
+        projects_info = project_info_manager_instance.get_projects()
+        for project_info_dto in projects_info:
+            projects.append({
+                "id": project_info_dto["id"],
+                "name": project_info_dto["name"],
+                "description": project_info_dto["description"],
+                "conda_environment": project_info_dto["conda_environment"],
+                "target_state": project_info_dto["target_state"],
+                "current_state": project_execution_manager_instance.check_running_project(project_info_dto["id"])
+            })
+        return projects
 
+    def update_project(self, id_: int, patch_project_dto: PatchProjectDto):
+        result = project_info_manager_instance.update_project(id_, patch_project_dto)
+        # 임시 코드
+        if patch_project_dto.target_state == "stopped":
+            project_execution_manager_instance.stop_project(id_)
+        if patch_project_dto.target_state == "running":
+            project_execution_manager_instance.start_project(id_)
+        return result
 
-    async def refresh_projects_info(self):
-        async def load_yaml(file_path):
-            async with aiofiles.open(file_path, mode='r') as file:
-                contents = await file.read()
-                return yaml.safe_load(contents)
-
-        def search_paths_data_scenario_yaml_file(directory):
-            yaml_files = []
-            for root, dirs, files in os.walk(directory):
-                for file in files:
-                    if file.endswith('data-scenario.yaml'):
-                        yaml_files.append(os.path.join(root, file))
-            return yaml_files
-
-        # 1. stop executors
-        for data_scenario_name in self.__data_scenario_executors.keys():
-            await self.stop_data_scenario(data_scenario_name)
-
-        # 2. reset
-        self.__data_scenario_executors = {}
-
-        # 3. reload
-        data_scenario_yaml_paths = search_paths_data_scenario_yaml_file(
-            self.__data_scenario_center_settings.projects_path)
-        for data_scenario_yaml_path in data_scenario_yaml_paths:
-            data_scenario_yaml_path = str(data_scenario_yaml_path)
-            try:
-                yaml_dict = await load_yaml(data_scenario_yaml_path)
-                script_path = pathlib.Path(str(data_scenario_yaml_path)).parent / "main.py"
-                data_scenario_data = yaml_dict["DataScenario"]
-                data_scenario = DataScenario(
-                    name=data_scenario_data["name"],
-                    description=data_scenario_data["description"],
-                    conda_environment=data_scenario_data["conda-environment"],
-                    script_path=script_path
-                )
-                data_scenario_executor = DataScenarioExecutor(data_scenario)
-                self.__data_scenario_executors[data_scenario.name] = data_scenario_executor
-            except KeyError as ke:
-                self.__logger.error(f"{data_scenario_yaml_path} is not enough values")
-                self.__logger.error(ke)
-
-    def get_project_info(self, project_name):
-        """특정 프로젝트 정보를 반환"""
-        return self.projects_info.get(project_name, None)
-
-
-project_info_manager = ProjectInfoManager("./")
+project_manager_instance = ProjectManager()
