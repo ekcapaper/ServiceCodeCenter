@@ -19,8 +19,8 @@ class DataScenarioExecutor(threading.Thread):
 
     def run(self):
         script_path = self.__data_scenario["script_path"]
-        #command = f"conda run -n {self.__data_scenario["conda_environment"]} python {str(script_path.resolve())}"
-        command = f"python {str(script_path.resolve())}"
+        command = f"conda run -n {self.__data_scenario["conda_environment"]} python {str(script_path.resolve())}"
+        #command = f"python {str(script_path.resolve())}"
         #print(script_path)
         #print(command)
 
