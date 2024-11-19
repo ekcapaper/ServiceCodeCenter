@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -6,6 +7,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
+from app.core.ProjectManager import project_manager_instance
 
 # logging level
 logging.basicConfig(level=logging.DEBUG)
@@ -14,6 +16,7 @@ logging.basicConfig(level=logging.DEBUG)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
+    asyncio.create_task(project_manager_instance.loop_sync_project_states())
     #await DataScenarioManager.get_instance(DataScenarioCenterSettings()).refresh_data_scenario()
 
     # asyncio.create_task(data_scenario_manager_instance.load_projects_dsm())

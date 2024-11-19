@@ -1,3 +1,4 @@
+import asyncio
 import copy
 
 from app.dto.project.CreateProjectDto import CreateProjectDto
@@ -55,10 +56,37 @@ class ProjectManager:
     def update_project(self, id_: int, patch_project_dto: PatchProjectDto):
         result = project_info_manager_instance.update_project(id_, patch_project_dto)
         # 임시 코드
-        if patch_project_dto.target_state == "stopped":
-            project_execution_manager_instance.stop_project(id_)
-        if patch_project_dto.target_state == "running":
-            project_execution_manager_instance.start_project(id_)
+        #if patch_project_dto.target_state == "stopped":
+        #    project_execution_manager_instance.stop_project(id_)
+        #if patch_project_dto.target_state == "running":
+        #    project_execution_manager_instance.start_project(id_)
         return result
+
+    def sync_project_states(self):
+        # 이미 중지된 프로젝트 정리
+        project_execution_manager_instance.collect_garbage_project_executor()
+        #print("sync")
+        # 삭제 및 반영
+        for project in project_manager_instance.get_projects():
+            if project["target_state"] == "stopped":
+                if project_execution_manager_instance.check_running_project(project["id"]) == "running":
+                    project_execution_manager_instance.stop_project(project["id"])
+            elif project["target_state"] == "running":
+                #print(project)
+                #print(project_execution_manager_instance.check_running_project(project["id"]))
+                if project_execution_manager_instance.check_running_project(project["id"]) == "stopped":
+                    #print("start")
+                    project_execution_manager_instance.start_project(project["id"])
+
+    async def loop_sync_project_states(self):
+        while True:
+            self.sync_project_states()
+            await asyncio.sleep(1)
+
+
+
+
+
+
 
 project_manager_instance = ProjectManager()

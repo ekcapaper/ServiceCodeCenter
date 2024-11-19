@@ -58,6 +58,7 @@ class ProjectInfoManager:
                     "description": data_scenario_data["description"],
                     "conda_environment": data_scenario_data["conda-environment"],
                     "target_state": data_scenario_data["target-state"],
+                    "script_path": pathlib.Path(str(yaml_file)).parent / "main.py"
                 })
             except KeyError as ke:
                 # temp
