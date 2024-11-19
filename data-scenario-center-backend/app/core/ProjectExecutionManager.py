@@ -11,6 +11,9 @@ class ProjectExecutionManager:
         # 임시 코드, id에 기반해서 데이터를 가져온 후에 thread 기반 실행 및 정지 코드 추가 필요
         self.project_executions[id_] = "RUNNING"
 
+
+
+
     def stop_project(self, id_):
         """프로젝트를 정지 상태로 전환"""
         if id_ in self.project_executions:

@@ -9,6 +9,8 @@ from app.dto.project.PatchProjectDto import PatchProjectDto
 
 class ProjectInfoManager:
     def __init__(self):
+        self.projects = []
+        '''
         self.projects = [
             {
                 "id": 0,
@@ -25,6 +27,7 @@ class ProjectInfoManager:
                 "target_state": "stopped",
             }
         ]
+        '''
 
     def load_projects_dsm(self):
         project_path = "./"
