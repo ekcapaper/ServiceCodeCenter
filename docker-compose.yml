@@ -6,6 +6,7 @@ services:
     container_name: data-scenario-center-ide
     volumes:
       - conda_volume:/opt/conda/envs
+      - ./projects:/home/project
     ports:
       - 3000:3000
 
@@ -16,6 +17,7 @@ services:
     container_name: data-scenario-center-backend
     volumes:
       - conda_volume:/opt/conda/envs
+      - ./projects:/app/app/projects
     ports:
       - 8000:8000
 
