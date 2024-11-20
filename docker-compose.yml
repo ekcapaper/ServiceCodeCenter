@@ -6,15 +6,6 @@ services:
     container_name: data-scenario-center-ide
     ports:
       - 3000:3000
-  data-scenario-center-spike:
-    build:
-      context: ./data-scenario-center-spike
-      dockerfile: Dockerfile
-    container_name: data-scenario-center-spike
-    volumes:
-      - conda_volume:/opt/conda/envs
-    ports:
-      - 8005:8000
 
   data-scenario-center-backend:
     build:
@@ -26,8 +17,12 @@ services:
     ports:
       - 8000:8000
 
-  
-
+  data-scenario-center-front-react:
+    build:
+      context: ./data-scenario-center-front-react
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
 
 volumes:
   conda_volume:
