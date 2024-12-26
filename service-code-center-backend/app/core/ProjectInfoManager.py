@@ -40,7 +40,7 @@ class ProjectInfoManager:
             yaml_files = []
             for root, dirs, files in os.walk(directory):
                 for file in files:
-                    if file.endswith('data-scenario.yaml'):
+                    if file.endswith('project.yaml'):
                         yaml_files.append(os.path.join(root, file))
             return yaml_files
 
