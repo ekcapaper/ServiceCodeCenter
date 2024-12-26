@@ -1,29 +1,29 @@
 services:
-  data-scenario-center-ide:
+  service-code-center-ide:
     build:
-      context: ./data-scenario-center-ide
+      context: ./service-code-center-ide
       dockerfile: browser.Dockerfile
-    container_name: data-scenario-center-ide
+    container_name: service-code-center-ide
     volumes:
       - conda_volume:/opt/conda/envs
       - ./projects:/home/project
     ports:
       - 3000:3000
 
-  data-scenario-center-backend:
+  service-code-center-backend:
     build:
-      context: ./data-scenario-center-backend
+      context: ./service-code-center-backend
       dockerfile: Dockerfile
-    container_name: data-scenario-center-backend
+    container_name: service-code-center-backend
     volumes:
       - conda_volume:/opt/conda/envs
       - ./projects:/app/app/projects
     ports:
       - 8000:8000
 
-  data-scenario-center-front-react:
+  service-code-center-front-react:
     build:
-      context: ./data-scenario-center-front-react
+      context: ./service-code-center-front-react
       dockerfile: Dockerfile
     ports:
       - "3001:80"
