@@ -1,6 +1,0 @@
-DataScenario:
-  id: 0
-  name: hello-file
-  description: hello world
-  conda-environment: base
-  target-state: "stopped"
