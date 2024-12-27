@@ -9,10 +9,10 @@ from app.core.ProjectInfoManager import project_info_manager_instance
 from app.core.ProjectExecutionManager import project_execution_manager_instance
 
 
-# 중복 코드
-# dict -> dto 필요
 class ProjectManager:
+    # 프로젝트 메타데이터 관리
     project_info_manager = project_info_manager_instance
+    # 프로젝트 실행 관리
     project_execution_manager = project_execution_manager_instance
     
     def create_project(self, create_project_dto: CreateProjectDto):

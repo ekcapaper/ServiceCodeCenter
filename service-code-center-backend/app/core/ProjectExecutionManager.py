@@ -110,25 +110,5 @@ class ProjectExecutionManager:
         for del_item in del_list:
             del self.project_executions[del_item]
 
-    '''
-    def collect_garbage_project_executor(self):
-        del_list = []
-        for key_data, project_executor in self.project_executions.items():
-            if project_executor.is_started and not project_executor.is_running:
-                del_list.append(key_data)
-
-        for del_item in del_list:
-            del self.project_executions[del_item]
-    
-    def sync_project_states(self):
-        # 현재 상태의 조사
-        """목표 상태와 현재 상태를 비교하여 동기화"""
-        for project_name, state in self.project_states.items():
-            if state["target_state"] != state["current_state"]:
-                if state["target_state"] == "running":
-                    self.start_project(project_name)
-                else:
-                    self.stop_project(project_name)
-    '''
 
 project_execution_manager_instance = ProjectExecutionManager(project_info_manager_instance)

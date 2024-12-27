@@ -51,7 +51,7 @@ class ProjectInfoManager:
         for yaml_file in yaml_files:
             try:
                 yaml_dict = load_yaml(yaml_file)
-                data_scenario_data = yaml_dict["DataScenario"]
+                data_scenario_data = yaml_dict["Project"]
                 self.projects.append({
                     "id": data_scenario_data["id"],
                     "name": data_scenario_data["name"],
