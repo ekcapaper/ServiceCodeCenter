@@ -1,4 +1,5 @@
 import pathlib
+import random
 
 import aiofiles
 import yaml
@@ -10,6 +11,7 @@ from app.dto.project.PatchProjectDto import PatchProjectDto
 class ProjectInfoManager:
     def __init__(self):
         self.projects = {}
+        self.project_path = "./"
         '''
         self.projects = [
             {
@@ -30,7 +32,7 @@ class ProjectInfoManager:
         '''
 
     def load_projects_dsm(self):
-        project_path = "./"
+        project_path = self.project_path
         def load_yaml(file_path):
             with open(file_path, mode='r') as file:
                 contents = file.read()
@@ -66,20 +68,32 @@ class ProjectInfoManager:
                 print(ke)
 
     def create_project(self, create_project_dto:CreateProjectDto):
-        raise NotImplemented()
-        # 코드 수정 필요
-        # ID 관련 해서 겹치지 않도록
-        id_ = len(self.projects)
-        self.projects.append(
-            {
-                "id": id_,
-                "name": create_project_dto.name,
-                "description": create_project_dto.description,
-                "conda_environment": create_project_dto.conda_environment,
-                "target_state": "stopped",
+        project_one_path = (pathlib.Path("/app/app/projects") / create_project_dto.name)
+        project_one_path.mkdir(parents=True)
+
+        yaml.dump(create_project_dto, open(project_one_path / "project.yaml", 'w'), default_flow_style=False)
+
+        data = {
+            'project': {
+                'id': random.randint(10000, 10000000000),
+                'name': create_project_dto.name,
+                'description': create_project_dto.description,
+                'conda-environment': create_project_dto.conda_environment,
+                'target-state': 'stopped'
             }
-        )
-        return self.projects[id_]
+        }
+
+        # YAML 파일로 저장
+        yaml_file_name = project_one_path / "project.yaml"
+        with open(yaml_file_name, 'w') as file:
+            yaml.dump(data, file, default_flow_style=False, sort_keys=False)
+
+        py_file_name = project_one_path / "main.py"
+        with open(py_file_name, 'w') as file:
+            pass
+
+        self.load_projects_dsm()
+        return self.projects[data["project"]["id"]]
 
     def get_project(self, id_):
         return self.projects[id_]
