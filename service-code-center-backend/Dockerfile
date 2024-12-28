@@ -61,6 +61,8 @@ COPY .. .
 RUN chmod 777 /opt/conda/envs
 #CUSTOM END
 
+RUN conda install -y pyyaml
+
 EXPOSE 8000
 
 CMD ["poetry", "run", "python3", "/app/app/main.py"]
