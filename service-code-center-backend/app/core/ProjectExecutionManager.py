@@ -24,7 +24,7 @@ class ProjectExecutor(threading.Thread):
         #print(script_path)
         #print(command)
 
-        self.__popen_instance = subprocess.Popen(command, shell=True)
+        self.__popen_instance = subprocess.Popen(command, shell=True, cwd=self.__project_meta["cwd"])
         self.__is_running = True
         self.__is_started = True
         self.__uid = self.__popen_instance.pid
