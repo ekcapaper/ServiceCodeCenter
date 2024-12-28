@@ -8,18 +8,18 @@ import pathlib
 from app.exceptions.AlreadyStartedException import AlreadyStartedException
 
 
-class DataScenarioExecutor(threading.Thread):
-    def __init__(self, data_scenario):
+class ProjectExecutor(threading.Thread):
+    def __init__(self, project_meta):
         super().__init__()
-        self.__data_scenario = data_scenario
+        self.__project_meta = project_meta
         self.__is_running = False
         self.__is_started = False
         self.__popen_instance = None
         self.__uid = None
 
     def run(self):
-        script_path = self.__data_scenario["script_path"]
-        command = f"conda run -n {self.__data_scenario["conda_environment"]} python {str(script_path.resolve())}"
+        script_path = self.__project_meta["script_path"]
+        command = f"conda run -n {self.__project_meta["conda_environment"]} python {str(script_path.resolve())}"
         #command = f"python {str(script_path.resolve())}"
         #print(script_path)
         #print(command)
@@ -63,7 +63,7 @@ class DataScenarioExecutor(threading.Thread):
 
     @property
     def data_scenario(self):
-        return self.__data_scenario
+        return self.__project_meta
 
     @property
     def is_started(self):
@@ -79,7 +79,7 @@ class ProjectExecutionManager:
     def start_project(self, id_):
         """프로젝트를 실행 상태로 전환"""
         if id_ not in self.project_executions.keys():
-            data_scenario_executor = DataScenarioExecutor(self.project_info_manager.get_project(id_))
+            data_scenario_executor = ProjectExecutor(self.project_info_manager.get_project(id_))
             data_scenario_executor.start()
             self.project_executions[id_] = data_scenario_executor
         else:
