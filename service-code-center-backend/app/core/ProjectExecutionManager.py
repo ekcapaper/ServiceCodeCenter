@@ -89,7 +89,7 @@ class ProjectExecutionManager:
         """프로젝트를 정지 상태로 전환"""
         # 10초 대기후 kill 기능 추가 필요
         if id_ in self.project_executions.keys():
-            self.project_executions["id"].stop()
+            self.project_executions[id_].stop()
             del self.project_executions[id_]
 
     def get_running_project_id(self):

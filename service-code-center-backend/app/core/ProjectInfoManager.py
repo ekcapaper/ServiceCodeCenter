@@ -9,7 +9,7 @@ from app.dto.project.PatchProjectDto import PatchProjectDto
 
 class ProjectInfoManager:
     def __init__(self):
-        self.projects = []
+        self.projects = {}
         '''
         self.projects = [
             {
@@ -52,7 +52,7 @@ class ProjectInfoManager:
             try:
                 yaml_dict = load_yaml(yaml_file)
                 data_scenario_data = yaml_dict["project"]
-                self.projects.append({
+                self.projects[data_scenario_data["id"]] ={
                     "id": data_scenario_data["id"],
                     "name": data_scenario_data["name"],
                     "description": data_scenario_data["description"],
@@ -60,12 +60,13 @@ class ProjectInfoManager:
                     "target_state": data_scenario_data["target-state"],
                     "script_path": pathlib.Path(str(yaml_file)).parent / "main.py",
                     "cwd": pathlib.Path(str(yaml_file)).parent
-                })
+                }
             except KeyError as ke:
                 # temp
                 print(ke)
 
     def create_project(self, create_project_dto:CreateProjectDto):
+        raise NotImplemented()
         # 코드 수정 필요
         # ID 관련 해서 겹치지 않도록
         id_ = len(self.projects)
@@ -84,11 +85,24 @@ class ProjectInfoManager:
         return self.projects[id_]
 
     def get_projects(self):
-        return self.projects
+        return list(self.projects.values())
 
     def update_project(self, id_: int, patch_project_dto:PatchProjectDto):
         self.projects[id_]["target_state"] = patch_project_dto.target_state
 
+        #
+        project_setting_path = pathlib.Path(self.projects[id_]["cwd"]) / "project.yaml"
+
+        # YAML 파일 불러오기
+        with open(project_setting_path, 'r') as file:
+            data = yaml.safe_load(file)
+
+        # target-state 변경
+        data['project']['target-state'] = patch_project_dto.target_state
+
+        # 변경된 내용을 YAML 파일에 저장
+        with open(project_setting_path, 'w') as file:
+            yaml.dump(data, file, default_flow_style=False)
 
 
 project_info_manager_instance = ProjectInfoManager()

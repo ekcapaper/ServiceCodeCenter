@@ -61,6 +61,7 @@ COPY .. .
 RUN chmod 777 /opt/conda/envs
 #CUSTOM END
 
+RUN conda install -y requests
 RUN conda install -y pyyaml
 
 EXPOSE 8000
