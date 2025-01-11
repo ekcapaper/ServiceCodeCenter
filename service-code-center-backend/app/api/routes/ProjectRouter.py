@@ -11,6 +11,20 @@ from app.core.ProjectManager import project_manager_instance
 
 router = APIRouter()
 
+#API 분리
+
+# 단순 정보 조회
+# 새로고침을 누를때까지 계속 데이터 유지
+# 수동 갱신 - 유지, 사용자가 마지막까지 만든 후에 누르고 기다리는 것을 기대
+# 명시적으로 새로고침을 하지 않는 이상 계속 유지된다.
+class ServiceCodeCenterProjectManager:
+    pass
+
+# 실행 관리
+# 새로고침을 누르면 모든 작업을 중지하고 초기화
+class ServiceCodeCenterExecutionManager:
+    pass
+
 @router.post("/projects", status_code=status.HTTP_201_CREATED, response_model=ResponseDSC)
 def create_projects(create_project_dto: CreateProjectDto):
     project = project_manager_instance.create_project(create_project_dto)
