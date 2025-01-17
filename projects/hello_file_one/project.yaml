@@ -1,6 +1,0 @@
-project:
-  id: 1
-  name: hello-file
-  description: hello world
-  conda-environment: base
-  target-state: "stopped"

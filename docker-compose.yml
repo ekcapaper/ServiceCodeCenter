@@ -1,32 +1,37 @@
 services:
-  service-code-center-ide:
+  service-theia-ide:
     build:
-      context: ./service-code-center-ide
+      context: ./service-theia-ide
       dockerfile: browser.Dockerfile
-    container_name: service-code-center-ide
+    container_name: service-theia-ide
+    restart: always
     volumes:
-      - conda_volume:/opt/conda/envs
-      - ./projects:/home/project
+      - ./projects:/home/theia/project
     ports:
       - 3000:3000
 
-  service-code-center-backend:
+  service-prefect:
     build:
-      context: ./service-code-center-backend
+      context: ./service-prefect
       dockerfile: Dockerfile
-    container_name: service-code-center-backend
+    container_name: service-prefect
+    restart: always
     volumes:
-      - conda_volume:/opt/conda/envs
-      - ./projects:/app/app/projects
+      - scc-prefect:/root/.prefect
     ports:
-      - 8000:8000
+      - 4200:4200
 
-  service-code-center-front-react:
-    build:
-      context: ./service-code-center-front-react
-      dockerfile: Dockerfile
-    ports:
-      - "3001:80"
+  service-timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: service-timescaledb
+    restart: always
+    environment:
+      POSTGRES_USER: scc
+      POSTGRES_PASSWORD: scc123
+      POSTGRES_DB: scc-db
+    volumes:
+      - scc-timescale_data:/var/lib/postgresql/data
 
 volumes:
-  conda_volume:
+  scc-prefect:
+  scc-timescale_data:
