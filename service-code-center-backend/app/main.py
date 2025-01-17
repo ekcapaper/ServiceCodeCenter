@@ -8,6 +8,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
 from app.core.ProjectManager import project_manager_instance
+from app.api.routes.ProjectRouter import ServiceCodeCenterProjectManager
 
 # logging level
 logging.basicConfig(level=logging.DEBUG)
