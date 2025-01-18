@@ -6,7 +6,7 @@ services:
     container_name: service-theia-ide
     restart: always
     volumes:
-      - ./projects:/home/theia/project
+      - ./projects:/home/project
     ports:
       - 3000:3000
 
