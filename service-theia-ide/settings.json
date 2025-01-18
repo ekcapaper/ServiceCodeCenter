@@ -1,0 +1,9 @@
+{
+    "terminal.integrated.defaultProfile.linux": "conda",
+    "terminal.integrated.profiles.linux": {
+        "conda": {
+            "path": "/bin/bash",
+            "args": ["-c", "source /opt/conda/etc/profile.d/conda.sh && conda activate base && exec bash"]
+        }
+    }
+} 
