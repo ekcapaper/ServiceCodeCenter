@@ -12,3 +12,5 @@ def hello_world_flow():
 
 if __name__ == "__main__":
     hello_world_flow()
+
+# prefect deploy --name hello-world-deployment --pool scc-process-pool
