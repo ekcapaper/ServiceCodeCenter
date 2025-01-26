@@ -12,7 +12,7 @@ services:
 
   service-prefect-server:
     build:
-      context: ./service-prefect
+      context: ./service-prefect-server
       dockerfile: Dockerfile
     container_name: service-prefect-server
     restart: always
@@ -25,7 +25,7 @@ services:
 
   service-prefect-worker:
     build:
-      context: ./service-prefect
+      context: ./service-prefect-worker
       dockerfile: Dockerfile
     container_name: service-prefect-worker
     restart: always

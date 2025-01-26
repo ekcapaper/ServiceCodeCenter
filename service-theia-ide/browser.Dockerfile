@@ -106,7 +106,7 @@ COPY ./settings.json /home/theia/.theia-ide/settings.json
 
 # CUSTOM CONDA SECTION END
 RUN conda install -n base prefect -y
-ENV PREFECT_API_URL=http://service-prefect:4200/api
+ENV PREFECT_API_URL=http://service-prefect-server:4200/api
 # CUSTOM Prefect
 
 # Swtich to Theia user
