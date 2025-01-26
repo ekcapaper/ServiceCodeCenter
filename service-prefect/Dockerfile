@@ -50,8 +50,10 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
+ENV PREFECT_API_URL=http://service-prefect-server:4200/api
+
 # install prefect
 RUN pip install -U prefect
 RUN conda install -n base prefect -y
 
-CMD ["prefect", "server", "start", "--host", "0.0.0.0"]
+ENTRYPOINT ["prefect"]
